@@ -31,7 +31,7 @@ class ProcessImage:
 
     def DetectObject(self):
 
-        vid = cv.VideoCapture('/usr/local/Dexter/DeepPython/PractisePython/BallBounceReference.mp4')
+        vid = cv.VideoCapture('/home/jsk/codes/Motion-Prediction-with-Kalman-Filter/BallBounceReference.mp4')
 
         if(vid.isOpened() == False):
             print('Cannot open input video')
@@ -62,7 +62,7 @@ class ProcessImage:
                 cv.putText(frame, "Predicted", (predictedCoords[0] + 50, predictedCoords[1] - 30), cv.FONT_HERSHEY_SIMPLEX, 0.5, [50, 200, 250])
                 cv.imshow('Input', frame)
 
-                if (cv.waitKey(300) & 0xFF == ord('q')):
+                if (cv.waitKey(30) & 0xFF == ord('q')):
                     break
 
             else:
@@ -88,7 +88,12 @@ class ProcessImage:
         [nLabels, labels, stats, centroids] = cv.connectedComponentsWithStats(greenMaskDilated, 8, cv.CV_32S)
 
         # First biggest contour is image border always, Remove it
-        stats = np.delete(stats, (0), axis = 0)
+        if len(stats) == 0:
+            return [0, 0]
+        elif len(stats) == 1:
+            pass
+        else:
+            stats = np.delete(stats, (0), axis = 0)
         maxBlobIdx_i, maxBlobIdx_j = np.unravel_index(stats.argmax(), stats.shape)
 
         # This is our ball coords that needs to be tracked
